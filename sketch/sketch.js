@@ -1,3 +1,8 @@
+var rules1;
+var rules2;
+var rules3;
+var rules4;
+var rules5;
 var preline1;
 var line1;
 var preline2;
@@ -11,6 +16,48 @@ var line5; //variables for lines pre and post adding rhyme
 
 class Limerick {
   constructor() {
+    rules1 = { //pattern for line1
+      start: "There is $adjective.art() $subject who $verb1 ",
+      adjective: RiTa.randomWord({ //random adjective
+        numSyllables: 1,
+        pos: "jj",
+        type: "stresses"
+      }),
+      subject: "man | boy | girl | gal | dog | cat | fish", //randomly chooses from list
+      verb1: "loves | hates | likes | wants"
+    };
+    rules2 = { //pattern for line2
+      start: "and $verb2 when they see $adjective2 ",
+      verb2: RiTa.randomWord({
+        numSyllables: 1, //random verb
+        pos: "vbz",
+        type: "stresses"
+      }),
+      adjective2: RiTa.randomWord({
+        numSyllables: 1,
+        pos: "jj",
+        type: "stresses"
+      })
+    }
+    rules3 = { //pattern for line3
+      start: "One $time they felt ",
+      time: "week | day | month | year | time"
+    }
+    rules4 = { //pattern for line4
+      start: "and $adverb said ", //random adverb
+      adverb: RiTa.randomWord({
+        pos: "rb",
+        numSyllables: 2
+      })
+    }
+    rules5 = { //pattern for line5
+      start: "confusing their $adjective5 ",
+      $adjective5: RiTa.randomWord({
+        numSyllables: 2,
+        pos: "jj",
+      })
+    }
+
     preline1 = RiTa.grammar(); //adding rules for each line
     preline1.addRules(rules1);
     preline2 = RiTa.grammar();
@@ -44,6 +91,7 @@ class Limerick {
       pos: "nns",
       limit: 1
     });
+
   }
   display() { //actually puts poem together and returns it
     line1 = preline1.expand() + this.rhymeA + ","; //add rhymes onto lines
@@ -56,47 +104,6 @@ class Limerick {
 }
 
 function setup() {
-  rules1 = { //pattern for line1
-    start: "There is $adjective.art() $subject who $verb1 ",
-    adjective: RiTa.randomWord({ //random adjective
-      numSyllables: 1,
-      pos: "jj",
-      type: "stresses"
-    }),
-    subject: "man | boy | girl | gal | dog | cat | fish", //randomly chooses from list
-    verb1: "loves | hates | likes | wants"
-  };
-  rules2 = { //pattern for line2
-    start: "and $verb2 when they see $adjective2 ",
-    verb2: RiTa.randomWord({
-      numSyllables: 1, //random verb
-      pos: "vbz",
-      type: "stresses"
-    }),
-    adjective2: RiTa.randomWord({
-      numSyllables: 1,
-      pos: "jj",
-      type: "stresses"
-    })
-  }
-  rules3 = { //pattern for line3
-    start: "One $time they felt ",
-    time: "week | day | month | year | time"
-  }
-  rules4 = { //pattern for line4
-    start: "and $adverb said ", //random adverb
-    adverb: RiTa.randomWord({
-      pos: "rb",
-      numSyllables: 2
-    })
-  }
-  rules5 = { //pattern for line5
-    start: "confusing their $adjective5 ",
-    $adjective5: RiTa.randomWord({
-      numSyllables: 2,
-      pos: "jj",
-    })
-  }
 
   textAlign(CENTER, CENTER); //formatting
   createCanvas(500, 500);
