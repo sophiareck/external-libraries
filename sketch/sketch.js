@@ -1,114 +1,117 @@
-class Circle { //modified from class example to only use move function with no display needed
-  constructor(x, y, size, xSpeed, ySpeed, color) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.xSpeed = xSpeed;
-    this.ySpeed = ySpeed;
-    this.color = color;
+var preline1;
+var line1;
+var preline2;
+var line2;
+var preline3;
+var line3;
+var preline4;
+var line4;
+var preline5;
+var line5; //variables for lines pre and post adding rhyme
+
+class Limerick {
+  constructor() {
+    preline1 = RiTa.grammar(); //adding rules for each line
+    preline1.addRules(rules1);
+    preline2 = RiTa.grammar();
+    preline2.addRules(rules2);
+    preline3 = RiTa.grammar();
+    preline3.addRules(rules3);
+    preline4 = RiTa.grammar();
+    preline4.addRules(rules4);
+    preline5 = RiTa.grammar();
+    preline5.addRules(rules5);
+
+    this.rhymeA = RiTa.randomWord({ //first rhyme
+      numSyllables: 1,
+      pos: "nns", //must be a noun
+      type: "stresses"
+    });
+    this.rhymeA1 = RiTa.rhymes(this.rhymeA, { //noun that rhymes with rhymeA
+      numSyllables: 1,
+      pos: "nns",
+      limit: 1
+    });
+    this.rhymeB = RiTa.randomWord({ //second rhyme
+      pos: "jj", //must be an adjective
+      numSyllables: 2
+    });
+    this.rhymeB1 = RiTa.rhymes(this.rhymeB, { //must rhyme with rhymeB
+      limit: 1,
+      numSyllables: 2
+    });
+    this.rhymeA2 = RiTa.rhymes(this.rhymeA, { //noun that rhymes with rhymeA
+      pos: "nns",
+      limit: 1
+    });
   }
-  move() {
-    this.x += this.xSpeed;
-    if (this.x > (width - this.size / 2) || this.x < 0 + this.size / 2) {
-      this.xSpeed *= -1;
-    }
-    this.y += this.ySpeed;
-    if (this.y > height - this.size / 2 || this.y < 0 + this.size / 2) {
-      this.ySpeed *= -1;
-    }
-    fill(this.color);
-    circle(this.x, this.y, this.size);
+  display() { //actually puts poem together and returns it
+    line1 = preline1.expand() + this.rhymeA + ","; //add rhymes onto lines
+    line2 = preline2.expand() + this.rhymeA1 + ".";
+    line3 = preline3.expand() + this.rhymeB + ",";
+    line4 = preline4.expand() + "'" + this.rhymeB1 + "!'";
+    line5 = preline5.expand() + this.rhymeA2 + ".";
+    return line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5; //format poem
   }
 }
-
-var circles = []; //array to hold circles
-var currentColor; //hold current coler slider HSB value
 
 function setup() {
-  colorMode(HSB, 255); //so i can have one color slider instead of 3 for rgb
-  createCanvas(650, 600);
-
-  circleDiv = createDiv(); //div for setting up new circle to add
-  circleDiv.style('border-style', 'solid');
-  circleDiv.style('height', '270px');
-  circleDiv.style('width', '465px');
-  circleDiv.position(700, 100);
-
-  blendDiv = createDiv(); //div to change blend mode
-  blendDiv.style('border-style', 'solid');
-  blendDiv.style('height', '100px');
-  blendDiv.style('width', '465px');
-  blendDiv.position(700, 400);
-
-  colorDiv = createDiv().parent(circleDiv); //create + style color slider div
-  colorDiv.style('height', '100px');
-  colorDiv.style('width', '450px');
-  colorDiv.style('border-style', 'dashed');
-  colorText = createElement('p', 'Color Slider').parent(colorDiv);
-  colorSlider = createSlider(0, 255, 127).parent(colorDiv);
-  colorSlider.style('width', '400px');
-
-  sizeDiv = createDiv().parent(circleDiv); //create + style size slider div
-  sizeDiv.style('height', '100px');
-  sizeDiv.style('width', '450px');
-  sizeDiv.style('border-style', 'dashed');
-  sizeText = createElement('p', 'Size Slider').parent(sizeDiv);
-  sizeSlider = createSlider(20, 150).parent(sizeDiv);
-  sizeSlider.style('width', '400px');
-
-  addCircleButton = createButton('Add Circle').parent(circleDiv); //add new circle
-  addCircleButton.style('font-size', '20pt');
-  addCircleButton.mousePressed(addCircle);
-
-  blendText = createElement('p', 'Change Blend Mode').parent(blendDiv);
-
-  addBlend = createButton('Add').parent(blendDiv); //button to change to add mode
-  addBlend.style('font-size', '15pt');
-  addBlend.mousePressed(blendAdd);
-
-  lightestBlend = createButton('Lightest').parent(blendDiv); //button to change to lightest mode
-  lightestBlend.style('font-size', '15pt');
-  lightestBlend.mousePressed(blendLightest);
-
-  differenceBlend = createButton('Difference').parent(blendDiv); //button to change to difference mode
-  differenceBlend.style('font-size', '15pt');
-  differenceBlend.mousePressed(blendDifference);
-
-  for (i = 0; i < 4; i++) { //create some circles to start with
-    circles.push(new Circle(random(75, width), random(75, height),
-      random(20, 150), random(1, 4), random(1, 4), [random(255), 255, 255]));
+  rules1 = { //pattern for line1
+    start: "There is $adjective.art() $subject who $verb1 ",
+    adjective: RiTa.randomWord({ //random adjective
+      numSyllables: 1,
+      pos: "jj",
+      type: "stresses"
+    }),
+    subject: "man | boy | girl | gal | dog | cat | fish", //randomly chooses from list
+    verb1: "loves | hates | likes | wants"
+  };
+  rules2 = { //pattern for line2
+    start: "and $verb2 when they see $adjective2 ",
+    verb2: RiTa.randomWord({
+      numSyllables: 1, //random verb
+      pos: "vbz",
+      type: "stresses"
+    }),
+    adjective2: RiTa.randomWord({
+      numSyllables: 1,
+      pos: "jj",
+      type: "stresses"
+    })
   }
-}
-
-function draw() {
-  clear();
-  background(0);
-  noStroke();
-  for (i = 0; i < circles.length; i++) { //for all circles that exist-- move()
-    circles[i].move();
+  rules3 = { //pattern for line3
+    start: "One $time they felt ",
+    time: "week | day | month | year | time"
   }
-  currentColor = ([colorSlider.value(), 255, 255]); //get HSB color value
-  fill(currentColor);
-  circle(75, 100, sizeSlider.value()); //preview circle
+  rules4 = { //pattern for line4
+    start: "and $adverb said ", //random adverb
+    adverb: RiTa.randomWord({
+      pos: "rb",
+      numSyllables: 2
+    })
+  }
+  rules5 = { //pattern for line5
+    start: "confusing their $adjective5 ",
+    $adjective5: RiTa.randomWord({
+      numSyllables: 2,
+      pos: "jj",
+    })
+  }
+
+  textAlign(CENTER, CENTER); //formatting
+  createCanvas(500, 500);
   fill(255);
-  textSize(18);
-  textAlign(CENTER);
-  text('new circle preview', 80, 20);
+  textSize(22);
+  background(0);
+
+  button = createButton("Generate a Random Limerick"); //button to make limericks
+  button.position(100, 450);
+  button.style('fontSize', '15pt');
+  button.mousePressed(createLimerick) //go to createLimerick function
 }
 
-function addCircle() { //create new circle object
-  circles.push(new Circle(random(75, width), random(75, height),
-    sizeSlider.value(), random(1, 4), random(1, 4), currentColor));
-}
-
-function blendAdd() { //self explanatory lol
-  blendMode(ADD);
-}
-
-function blendLightest() {
-  blendMode(LIGHTEST);
-}
-
-function blendDifference() {
-  blendMode(DIFFERENCE);
+function createLimerick() {
+  background(0); //clear background
+  let poem = new Limerick(); //make a new limerick
+  text(poem.display(), width / 2, height / 2); //show new limerick
 }
